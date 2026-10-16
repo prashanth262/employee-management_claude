@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="~{fragments :: head(${employee.id == null ? 'Add employee' : 'Edit employee'})}"></head>
+
+<body>
+	<nav th:replace="~{fragments :: navbar}"></nav>
+
+	<main class="container py-4 form-page">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a th:href="@{/employees}">Employees</a></li>
+				<li class="breadcrumb-item active" aria-current="page"
+					th:text="${employee.id == null} ? 'Add' : 'Edit'">Add</li>
+			</ol>
+		</nav>
+		<h1 class="page-title mb-4" th:text="${employee.id == null} ? 'Add employee' : 'Edit employee'">Add employee</h1>
+
+		<div th:if="${#lists.isEmpty(departments)}" class="alert alert-warning d-flex align-items-center gap-2">
+			<i class="bi bi-info-circle-fill"></i>
+			<span>You need at least one department before adding employees.
+				<a th:href="@{/departments/new}" class="alert-link">Create a department</a>.</span>
+		</div>
+
+		<form th:action="@{/employees/save}" th:object="${employee}" method="post" class="card" novalidate>
+			<input type="hidden" th:field="*{id}">
+			<div class="card-body">
+				<div th:if="${#fields.hasErrors('*')}" class="alert alert-danger py-2">
+					<i class="bi bi-exclamation-circle me-1"></i>Please fix the highlighted fields.
+				</div>
+
+				<h2 class="form-section">Personal details</h2>
+				<div class="row g-3 mb-4">
+					<div class="col-md-6">
+						<label for="firstName" class="form-label">First name <span class="text-danger">*</span></label>
+						<input type="text" th:field="*{firstName}" class="form-control" th:errorclass="is-invalid"
+							maxlength="50" autofocus>
+						<div class="invalid-feedback" th:errors="*{firstName}"></div>
+					</div>
+					<div class="col-md-6">
+						<label for="lastName" class="form-label">Last name <span class="text-danger">*</span></label>
+						<input type="text" th:field="*{lastName}" class="form-control" th:errorclass="is-invalid"
+							maxlength="50">
+						<div class="invalid-feedback" th:errors="*{lastName}"></div>
+					</div>
+					<div class="col-md-6">
+						<label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+						<input type="email" th:field="*{email}" class="form-control" th:errorclass="is-invalid"
+							maxlength="120" placeholder="name@company.com">
+						<div class="invalid-feedback" th:errors="*{email}"></div>
+					</div>
+					<div class="col-md-6">
+						<label for="phone" class="form-label">Phone</label>
+						<input type="tel" th:field="*{phone}" class="form-control" th:errorclass="is-invalid"
+							maxlength="20" placeholder="+91 98765 43210">
+						<div class="invalid-feedback" th:errors="*{phone}"></div>
+					</div>
+				</div>
+
+				<h2 class="form-section">Job details</h2>
+				<div class="row g-3">
+					<div class="col-md-6">
+						<label for="departmentId" class="form-label">Department <span class="text-danger">*</span></label>
+						<select th:field="*{departmentId}" class="form-select" th:errorclass="is-invalid">
+							<option value="">Select a department…</option>
+							<option th:each="d : ${departments}" th:value="${d.id}" th:text="${d.name}">Dept</option>
+						</select>
+						<div class="invalid-feedback" th:errors="*{departmentId}"></div>
+					</div>
+					<div class="col-md-6">
+						<label for="jobTitle" class="form-label">Job title</label>
+						<input type="text" th:field="*{jobTitle}" class="form-control" th:errorclass="is-invalid"
+							maxlength="100" placeholder="e.g. Software Engineer">
+						<div class="invalid-feedback" th:errors="*{jobTitle}"></div>
+					</div>
+					<div class="col-md-6">
+						<label for="salary" class="form-label">Annual salary</label>
+						<input type="number" th:field="*{salary}" class="form-control" th:errorclass="is-invalid"
+							min="0.01" step="0.01" placeholder="0.00">
+						<div class="invalid-feedback" th:errors="*{salary}"></div>
+					</div>
+					<div class="col-md-6">
+						<label for="hireDate" class="form-label">Hire date</label>
+						<input type="date" th:field="*{hireDate}" class="form-control" th:errorclass="is-invalid"
+							th:max="${#temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}">
+						<div class="invalid-feedback" th:errors="*{hireDate}"></div>
+					</div>
+				</div>
+			</div>
+			<div class="card-footer bg-transparent d-flex justify-content-end gap-2">
+				<a th:href="@{/employees}" class="btn btn-light">Cancel</a>
+				<button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>
+					<span th:text="${employee.id == null} ? 'Add employee' : 'Save changes'">Save</span></button>
+			</div>
+		</form>
+	</main>
+
+	<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+
+</html>

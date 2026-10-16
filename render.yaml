@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: employee-management
+    runtime: docker
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: H2_CONSOLE
+        value: "false"

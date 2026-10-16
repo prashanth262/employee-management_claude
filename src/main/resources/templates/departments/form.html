@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="~{fragments :: head(${department.id == null ? 'Add department' : 'Edit department'})}"></head>
+
+<body>
+	<nav th:replace="~{fragments :: navbar}"></nav>
+
+	<main class="container py-4 form-page form-page-sm">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a th:href="@{/departments}">Departments</a></li>
+				<li class="breadcrumb-item active" aria-current="page"
+					th:text="${department.id == null} ? 'Add' : 'Edit'">New</li>
+			</ol>
+		</nav>
+		<h1 class="page-title mb-4" th:text="${department.id == null} ? 'Add department' : 'Edit department'">New
+			department</h1>
+
+		<form th:action="@{/departments/save}" th:object="${department}" method="post" class="card" novalidate>
+			<input type="hidden" th:field="*{id}">
+			<div class="card-body">
+				<label for="name" class="form-label">Department name <span class="text-danger">*</span></label>
+				<input type="text" th:field="*{name}" class="form-control" th:errorclass="is-invalid" maxlength="100"
+					placeholder="e.g. Engineering" autofocus>
+				<div class="invalid-feedback" th:errors="*{name}"></div>
+			</div>
+			<div class="card-footer bg-transparent d-flex justify-content-end gap-2">
+				<a th:href="@{/departments}" class="btn btn-light">Cancel</a>
+				<button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>
+					<span th:text="${department.id == null} ? 'Create' : 'Save changes'">Save</span></button>
+			</div>
+		</form>
+	</main>
+
+	<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+
+</html>

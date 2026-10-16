@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="~{fragments :: head('Departments')}"></head>
+
+<body>
+	<nav th:replace="~{fragments :: navbar}"></nav>
+
+	<main class="container py-4">
+		<div th:replace="~{fragments :: flash}"></div>
+
+		<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+			<div>
+				<h1 class="page-title">Departments</h1>
+				<p class="text-secondary mb-0"><span th:text="${#lists.size(departments)}">0</span> total</p>
+			</div>
+			<a th:href="@{/departments/new}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>New department</a>
+		</div>
+
+		<div class="card">
+			<div th:if="${#lists.isEmpty(departments)}" class="card-body empty-state">
+				<i class="bi bi-diagram-3"></i>
+				<p>No departments yet.</p>
+				<a th:href="@{/departments/new}" class="btn btn-primary btn-sm">Create department</a>
+			</div>
+			<div th:unless="${#lists.isEmpty(departments)}" class="table-responsive">
+				<table class="table table-hover align-middle mb-0">
+					<thead>
+						<tr>
+							<th>Department</th>
+							<th>Employees</th>
+							<th class="text-end">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="d : ${departments}">
+							<td class="fw-semibold">
+								<span class="dept-icon"><i class="bi bi-building"></i></span>
+								<span th:text="${d.name}">Dept</span>
+							</td>
+							<td>
+								<a th:href="@{/employees(departmentId=${d.id})}" class="badge rounded-pill text-bg-primary text-decoration-none"
+									th:text="${d.employeeCount} + (${d.employeeCount == 1} ? ' employee' : ' employees')">0</a>
+							</td>
+							<td class="text-end text-nowrap">
+								<a th:href="@{/employees/new(departmentId=${d.id})}" class="btn btn-sm btn-outline-primary"
+									title="Add employee to this department"><i class="bi bi-person-plus"></i></a>
+								<a th:href="@{/departments/{id}/edit(id=${d.id})}" class="btn btn-sm btn-outline-secondary"
+									title="Rename"><i class="bi bi-pencil"></i></a>
+								<button type="button" class="btn btn-sm btn-outline-danger" title="Delete"
+									th:disabled="${d.employeeCount > 0}"
+									th:attr="data-delete-action=@{/departments/{id}/delete(id=${d.id})},data-delete-name=${d.name}">
+									<i class="bi bi-trash3"></i></button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<p class="small text-secondary mt-2"><i class="bi bi-info-circle me-1"></i>A department can only be deleted once it
+			has no employees.</p>
+	</main>
+
+	<div th:replace="~{fragments :: deleteModal}"></div>
+	<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+
+</html>
